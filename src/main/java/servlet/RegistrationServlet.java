@@ -1,5 +1,7 @@
 package servlet;
 
+import exception.DBException;
+import model.BankClient;
 import service.BankClientService;
 import util.PageGenerator;
 
@@ -9,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
 
 public class RegistrationServlet extends HttpServlet {
     @Override
@@ -18,6 +21,7 @@ public class RegistrationServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        new BankClientService().addClient();
+        BankClient newBankClient = new BankClient(req.getParameter("name"), req.getParameter("password"), Long.parseLong(req.getParameter("money")));
+//            new BankClientService().addClient(newBankClient);
     }
 }

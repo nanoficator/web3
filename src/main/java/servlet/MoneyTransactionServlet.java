@@ -22,6 +22,6 @@ public class MoneyTransactionServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        bankClientService.sendMoneyToClient();
+//        bankClientService.sendMoneyToClient();
     }
 }
