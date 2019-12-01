@@ -71,9 +71,9 @@ public class BankClientService {
                     append("jdbc:mysql://").          //db type
                     append("localhost:").             //host name
                     append("3306/").                  //port
-                    append("bank_clients?").            //db name
+                    append("bank_clients?").          //db name
                     append("user=root&").             //login
-                    append("password=root").          //password
+                    append("password=p@ssw0rd").      //password
                     append("&serverTimezone=UTC");    //setup server time
 
             System.out.println("URL: " + url + "\n");
