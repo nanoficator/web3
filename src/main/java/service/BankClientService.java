@@ -67,12 +67,13 @@ public class BankClientService {
             StringBuilder url = new StringBuilder();
 
             url.
-                    append("jdbc:mysql://").        //db type
-                    append("localhost:").           //host name
-                    append("3306/").                //port
-                    append("db_example?").          //db name
-                    append("user=root&").          //login
-                    append("password=root");       //password
+                    append("jdbc:mysql://").             //db type
+                    append("localhost:").                //host name
+                    append("3306/").                     //port
+                    append("bank_clients?").             //db name
+                    append("user=root&").                //login
+                    append("password=p@ssw0rd").         //password
+                    append("&serverTimezone=UTC");       //setup server time
 
             System.out.println("URL: " + url + "\n");
 
