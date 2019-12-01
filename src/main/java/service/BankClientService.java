@@ -60,6 +60,7 @@ public class BankClientService {
         }
     }
 
+
     private static Connection getMysqlConnection() {
         try {
             DriverManager.registerDriver((Driver) Class.forName("com.mysql.jdbc.Driver").newInstance());
@@ -67,13 +68,13 @@ public class BankClientService {
             StringBuilder url = new StringBuilder();
 
             url.
-                    append("jdbc:mysql://").             //db type
-                    append("localhost:").                //host name
-                    append("3306/").                     //port
-                    append("bank_clients?").             //db name
-                    append("user=root&").                //login
-                    append("password=p@ssw0rd").         //password
-                    append("&serverTimezone=UTC");       //setup server time
+                    append("jdbc:mysql://").          //db type
+                    append("localhost:").             //host name
+                    append("3306/").                  //port
+                    append("bank_clients?").            //db name
+                    append("user=root&").             //login
+                    append("password=root").          //password
+                    append("&serverTimezone=UTC");    //setup server time
 
             System.out.println("URL: " + url + "\n");
 
