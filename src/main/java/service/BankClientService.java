@@ -23,24 +23,55 @@ public class BankClientService {
         }
     }
 
-    public BankClient getClientByName(String name) {
-        return null;
+    public BankClient getClientByName(String name) throws DBException {
+        try {
+            return getBankClientDAO().getClientByName(name);
+        } catch (SQLException e) {
+            throw new DBException(e);
+        }
     }
 
-    public List<BankClient> getAllClient() {
-        return  null;
+    public List<BankClient> getAllClient() throws DBException {
+        try {
+            return getBankClientDAO().getAllBankClient();
+        } catch (SQLException e) {
+            throw new DBException(e);
+        }
     }
 
-    public boolean deleteClient(String name) {
-        return false;
+    public boolean deleteClient(String name) throws DBException {
+        try {
+            getBankClientDAO().deleteClient(name);
+            return true;
+        } catch (SQLException e) {
+            throw new DBException(e);
+        }
     }
 
     public boolean addClient(BankClient client) throws DBException {
-        return false;
+        try {
+            getBankClientDAO().addClient(client);
+            return true;
+        } catch (SQLException e) {
+            throw new DBException(e);
+        }
     }
 
-    public boolean sendMoneyToClient(BankClient sender, String name, Long value) {
-        return false;
+    public boolean sendMoneyToClient(BankClient sender, String name, Long value) throws DBException {
+        try {
+            BankClient receiver = getClientByName(name);
+            if (getBankClientDAO().validateClient(sender.getName(), sender.getPassword()) &&
+                    getBankClientDAO().isClientHasSum(sender.getName(), value) &&
+                    getBankClientDAO().validateClient(receiver.getName(), receiver.getPassword())) {
+                getBankClientDAO().updateClientsMoney(sender.getName(),sender.getPassword(), -value);
+                getBankClientDAO().updateClientsMoney(receiver.getName(),receiver.getPassword(),value);
+                return true;
+            } else {
+                return false;
+            }
+        } catch (SQLException e) {
+            throw new DBException(e);
+        }
     }
 
     public void cleanUp() throws DBException {

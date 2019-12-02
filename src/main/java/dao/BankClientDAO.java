@@ -111,6 +111,12 @@ public class BankClientDAO {
         stmt.close();
     }
 
+    public void deleteClient(String name) throws SQLException {
+        Statement stmt = connection.createStatement();
+        stmt.execute("delete from bank_client where name='" + name + "'");
+        stmt.close();
+    }
+
     public void createTable() throws SQLException {
         Statement stmt = connection.createStatement();
         stmt.execute("create table if not exists bank_client (id bigint auto_increment, name varchar(256), password varchar(256), money bigint, primary key (id))");
