@@ -3,12 +3,8 @@ package dao;
 import com.sun.deploy.util.SessionState;
 import model.BankClient;
 import servlet.ResultServlet;
-
 import javax.xml.transform.Result;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -49,8 +45,18 @@ public class BankClientDAO {
 
     public void updateClientsMoney(String name, String password, Long transactValue) throws SQLException {
         Statement stmt = connection.createStatement();
-        stmt.execute("update bank_client set money=money+'" + transactValue + "' where name='" + name + "' and password='" + password + "'");
+        stmt.execute("select * from bank_client where name = '" + name + "'");
+        ResultSet result = stmt.getResultSet();
+        result.next();
+        Long userMoney = result.getLong(4);
+        result.close();
         stmt.close();
+        PreparedStatement preparedStatement = connection.prepareStatement("update bank_client set money = ? where name = ? and password = ?");
+        preparedStatement.setLong(1, + transactValue);
+        preparedStatement.setString(2, name);
+        preparedStatement.setString(3, password);
+        preparedStatement.executeUpdate();
+        preparedStatement.close();
     }
 
     public BankClient getClientById(long id) throws SQLException {
@@ -71,7 +77,8 @@ public class BankClientDAO {
         Statement stmt = connection.createStatement();
         stmt.execute("select * from bank_client where name='" + name + "'");
         ResultSet result = stmt.getResultSet();
-        Long userMoney = result.getLong(4);
+        result.next();
+        long userMoney = result.getLong(4);
         result.close();
         stmt.close();
         return expectedSum <= userMoney;
