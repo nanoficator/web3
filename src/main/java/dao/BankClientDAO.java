@@ -52,7 +52,7 @@ public class BankClientDAO {
         result.close();
         stmt.close();
         PreparedStatement preparedStatement = connection.prepareStatement("update bank_client set money = ? where name = ? and password = ?");
-        preparedStatement.setLong(1, + transactValue);
+        preparedStatement.setLong(1, userMoney + transactValue);
         preparedStatement.setString(2, name);
         preparedStatement.setString(3, password);
         preparedStatement.executeUpdate();
