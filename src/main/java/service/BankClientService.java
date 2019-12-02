@@ -64,15 +64,15 @@ public class BankClientService {
     public boolean sendMoneyToClient(BankClient sender, String name, Long value) throws IOException {
         try {
             BankClient receiver = getClientByName(name);
-            if (getBankClientDAO().validateClient(sender.getName(), sender.getPassword()) &&
-                    getBankClientDAO().isClientHasSum(sender.getName(), value) &&
-                    getBankClientDAO().validateClient(receiver.getName(), receiver.getPassword())) {
-                getBankClientDAO().updateClientsMoney(sender.getName(),sender.getPassword(), -value);
-                getBankClientDAO().updateClientsMoney(receiver.getName(),receiver.getPassword(),value);
-                return true;
-            } else {
-                return false;
+            if (getBankClientDAO().validateClient(sender.getName(), sender.getPassword())) {
+                sender = getClientByName(sender.getName());
+                if (getBankClientDAO().validateClient(receiver.getName(), receiver.getPassword()) && getBankClientDAO().isClientHasSum(sender.getName(), value)) {
+                    getBankClientDAO().updateClientsMoney(sender.getName(),sender.getPassword(), -value);
+                    getBankClientDAO().updateClientsMoney(receiver.getName(),receiver.getPassword(),value);
+                    return true;
+                }
             }
+            return false;
         } catch (SQLException e) {
             throw new IOException(e);
         }

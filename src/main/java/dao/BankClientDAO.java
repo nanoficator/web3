@@ -34,14 +34,14 @@ public class BankClientDAO {
     }
 
     public boolean validateClient(String name, String password) throws SQLException {
-        Statement stmt = connection.createStatement();
-        stmt.execute("select * from bank_client where name='" + name + "'");
-        ResultSet result = stmt.getResultSet();
-        result.next();
-        String userPassword = result.getString(3);
+        PreparedStatement preparedStatement = connection.prepareStatement("select * from bank_client where name = ? and password = ?");
+        preparedStatement.setString(1, name);
+        preparedStatement.setString(2, password);
+        ResultSet result = preparedStatement.executeQuery();
+        boolean validation = result.next();
         result.close();
-        stmt.close();
-        return userPassword.equals(password);
+        preparedStatement.close();
+        return validation;
     }
 
     public void updateClientsMoney(String name, String password, Long transactValue) throws SQLException {
@@ -49,7 +49,7 @@ public class BankClientDAO {
         preparedStatement.setLong(1, transactValue);
         preparedStatement.setString(2, name);
         preparedStatement.setString(3, password);
-        preparedStatement.executeUpdate();
+        preparedStatement.execute();
         preparedStatement.close();
     }
 
@@ -68,13 +68,13 @@ public class BankClientDAO {
     }
 
     public boolean isClientHasSum(String name, Long expectedSum) throws SQLException {
-        Statement stmt = connection.createStatement();
-        stmt.execute("select * from bank_client where name='" + name + "'");
-        ResultSet result = stmt.getResultSet();
+        PreparedStatement preparedStatement = connection.prepareStatement("select * from bank_client where name = ?");
+        preparedStatement.setString(1, name);
+        ResultSet result = preparedStatement.executeQuery();
         result.next();
-        long userMoney = result.getLong(4);
+        Long userMoney = result.getLong(4);
         result.close();
-        stmt.close();
+        preparedStatement.close();
         return expectedSum <= userMoney;
     }
 
