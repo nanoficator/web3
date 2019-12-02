@@ -23,7 +23,7 @@ public class BankClientDAO {
     public List<BankClient> getAllBankClient() throws SQLException {
         List<BankClient> allBankClient = new LinkedList<>();
         Statement stmt = connection.createStatement();
-        stmt.execute("select * from bank_clien");
+        stmt.execute("select * from bank_client");
         ResultSet result = stmt.getResultSet();
         while (result.next()) {
             long userId = result.getLong(1);
@@ -39,7 +39,7 @@ public class BankClientDAO {
 
     public boolean validateClient(String name, String password) throws SQLException {
         Statement stmt = connection.createStatement();
-        stmt.execute("select * from bank_client where name='" + name + "' and password='"+ password +"'");
+        stmt.execute("select * from bank_client where name='" + name + "'");
         ResultSet result = stmt.getResultSet();
         boolean validation = result.next();
         result.close();
