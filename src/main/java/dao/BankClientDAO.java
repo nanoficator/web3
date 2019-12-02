@@ -2,11 +2,14 @@ package dao;
 
 import com.sun.deploy.util.SessionState;
 import model.BankClient;
+import servlet.ResultServlet;
 
+import javax.xml.transform.Result;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.LinkedList;
 import java.util.List;
 
 public class BankClientDAO {
@@ -17,43 +20,95 @@ public class BankClientDAO {
         this.connection = connection;
     }
 
-    public List<BankClient> getAllBankClient() {
-        return null;
+    public List<BankClient> getAllBankClient() throws SQLException {
+        List<BankClient> allBankClient = new LinkedList<>();
+        Statement stmt = connection.createStatement();
+        stmt.execute("select * from bank_clien");
+        ResultSet result = stmt.getResultSet();
+        while (result.next()) {
+            long userId = result.getLong(1);
+            String userName = result.getString(2);
+            String userPassword = result.getString(3);
+            Long userMoney = result.getLong(4);
+            allBankClient.add(new BankClient(userId, userName, userPassword, userMoney));
+        }
+        result.close();
+        stmt.close();
+        return allBankClient;
     }
 
     public boolean validateClient(String name, String password) throws SQLException {
-        return false;
+        Statement stmt = connection.createStatement();
+        stmt.execute("select * from bank_clien where name='" + name + "' and password='"+ password +"'");
+        ResultSet result = stmt.getResultSet();
+        boolean validation = result.next();
+        result.close();
+        stmt.close();
+        return validation;
     }
 
-    public void updateClientsMoney(String name, String password, Long transactValue) {
-
+    public void updateClientsMoney(String name, String password, Long transactValue) throws SQLException {
+        Statement stmt = connection.createStatement();
+        stmt.execute("update bank_client set money=money+'" + transactValue + "' where name='" + name + "' and password='" + password + "'");
+        stmt.close();
     }
 
     public BankClient getClientById(long id) throws SQLException {
-        return null;
+        Statement stmt = connection.createStatement();
+        stmt.execute("select * from bank_client where id='" + id + "'");
+        ResultSet result = stmt.getResultSet();
+        result.next();
+        long userId = result.getLong(1);
+        String userName = result.getString(2);
+        String userPassword = result.getString(3);
+        Long userMoney = result.getLong(4);
+        result.close();
+        stmt.close();
+        return new BankClient(userId, userName, userPassword, userMoney);
     }
 
-    public boolean isClientHasSum(String name, Long expectedSum) {
-        return false;
+    public boolean isClientHasSum(String name, Long expectedSum) throws SQLException {
+        Statement stmt = connection.createStatement();
+        stmt.execute("select * from bank_client where name='" + name + "'");
+        ResultSet result = stmt.getResultSet();
+        Long userMoney = result.getLong(4);
+        result.close();
+        stmt.close();
+        return expectedSum <= userMoney;
     }
 
     public long getClientIdByName(String name) throws SQLException {
         Statement stmt = connection.createStatement();
-        stmt.execute("select * from bank_clien where name='" + name + "'");
+        stmt.execute("select * from bank_client where name='" + name + "'");
         ResultSet result = stmt.getResultSet();
         result.next();
-        Long id = result.getLong(1);
+        Long userId = result.getLong(1);
         result.close();
         stmt.close();
-        return id;
+        return userId;
     }
 
-    public BankClient getClientByName(String name) {
-        return null;
+    public BankClient getClientByName(String name) throws SQLException {
+        Statement stmt = connection.createStatement();
+        stmt.execute("select * from bank_client where name='" + name + "'");
+        ResultSet result = stmt.getResultSet();
+        result.next();
+        long userId = result.getLong(1);
+        String userName = result.getString(2);
+        String userPassword = result.getString(3);
+        Long userMoney = result.getLong(4);
+        result.close();
+        stmt.close();
+        return new BankClient(userId, userName, userPassword, userMoney);
     }
 
     public void addClient(BankClient client) throws SQLException {
-
+        String clientName = client.getName();
+        String clientPassword = client.getPassword();
+        Long clientMoney = client.getMoney();
+        Statement stmt = connection.createStatement();
+        stmt.execute("insert into bank_client (name, password, money) ('" + clientName + "', '" + clientPassword + "', '" + clientMoney + "')");
+        stmt.close();
     }
 
     public void createTable() throws SQLException {

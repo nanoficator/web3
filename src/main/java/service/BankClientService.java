@@ -72,13 +72,13 @@ public class BankClientService {
                     append("localhost:").             //host name
                     append("3306/").                  //port
                     append("bank_clients?").          //db name
-                    append("user=root&").             //login
-                    append("password=p@ssw0rd").      //password
+                    append("user=root").              //login
+                    append("&password=p@ssw0rd").     //password
                     append("&serverTimezone=UTC");    //setup server time
 
             System.out.println("URL: " + url + "\n");
 
-            Connection connection = DriverManager.getConnection(url.toString());
+            Connection connection = DriverManager.getConnection(url.toString(), "root", "p@ssw0rd");
             return connection;
         } catch (SQLException | InstantiationException | IllegalAccessException | ClassNotFoundException e) {
             e.printStackTrace();
