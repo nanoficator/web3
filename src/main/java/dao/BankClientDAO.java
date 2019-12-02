@@ -39,7 +39,7 @@ public class BankClientDAO {
 
     public boolean validateClient(String name, String password) throws SQLException {
         Statement stmt = connection.createStatement();
-        stmt.execute("select * from bank_clien where name='" + name + "' and password='"+ password +"'");
+        stmt.execute("select * from bank_client where name='" + name + "' and password='"+ password +"'");
         ResultSet result = stmt.getResultSet();
         boolean validation = result.next();
         result.close();
@@ -107,7 +107,7 @@ public class BankClientDAO {
         String clientPassword = client.getPassword();
         Long clientMoney = client.getMoney();
         Statement stmt = connection.createStatement();
-        stmt.execute("insert into bank_client (name, password, money) ('" + clientName + "', '" + clientPassword + "', '" + clientMoney + "')");
+        stmt.execute("insert into bank_client (name, password, money) values ('" + clientName + "', '" + clientPassword + "', '" + clientMoney + "')");
         stmt.close();
     }
 

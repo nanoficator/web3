@@ -21,7 +21,11 @@ public class RegistrationServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        BankClient newBankClient = new BankClient(req.getParameter("name"), req.getParameter("password"), Long.parseLong(req.getParameter("money")));
-//            new BankClientService().addClient(newBankClient);
+        try {
+            BankClient newBankClient = new BankClient(req.getParameter("name"), req.getParameter("password"), Long.parseLong(req.getParameter("money")));
+            new BankClientService().addClient(newBankClient);
+        } catch (DBException e) {
+            throw new IOException(e);
+        }
     }
 }

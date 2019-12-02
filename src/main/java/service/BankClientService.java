@@ -4,6 +4,7 @@ import dao.BankClientDAO;
 import exception.DBException;
 import model.BankClient;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.DriverManager;
@@ -23,19 +24,19 @@ public class BankClientService {
         }
     }
 
-    public BankClient getClientByName(String name) throws DBException {
+    public BankClient getClientByName(String name) throws IOException {
         try {
             return getBankClientDAO().getClientByName(name);
         } catch (SQLException e) {
-            throw new DBException(e);
+            throw new IOException(e);
         }
     }
 
-    public List<BankClient> getAllClient() throws DBException {
+    public List<BankClient> getAllClient() throws IOException {
         try {
             return getBankClientDAO().getAllBankClient();
         } catch (SQLException e) {
-            throw new DBException(e);
+            throw new IOException(e);
         }
     }
 
@@ -50,14 +51,17 @@ public class BankClientService {
 
     public boolean addClient(BankClient client) throws DBException {
         try {
-            getBankClientDAO().addClient(client);
-            return true;
+            if (!getBankClientDAO().validateClient(client.getName(), client.getPassword())) {
+                getBankClientDAO().addClient(client);
+                return true;
+            }
+            return false;
         } catch (SQLException e) {
             throw new DBException(e);
         }
     }
 
-    public boolean sendMoneyToClient(BankClient sender, String name, Long value) throws DBException {
+    public boolean sendMoneyToClient(BankClient sender, String name, Long value) throws IOException {
         try {
             BankClient receiver = getClientByName(name);
             if (getBankClientDAO().validateClient(sender.getName(), sender.getPassword()) &&
@@ -70,7 +74,7 @@ public class BankClientService {
                 return false;
             }
         } catch (SQLException e) {
-            throw new DBException(e);
+            throw new IOException(e);
         }
     }
 
@@ -94,7 +98,7 @@ public class BankClientService {
 
     private static Connection getMysqlConnection() {
         try {
-            DriverManager.registerDriver((Driver) Class.forName("com.mysql.jdbc.Driver").newInstance());
+            DriverManager.registerDriver((Driver) Class.forName("com.mysql.cj.jdbc.Driver").newInstance());
 
             StringBuilder url = new StringBuilder();
 
