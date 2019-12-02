@@ -37,10 +37,4 @@ public class RegistrationServlet extends HttpServlet {
             throw new IOException(e);
         }
     }
-
-    private static Map<String, Object> createPageVariablesMap(HttpServletRequest request) {
-        Map<String, Object> pageVariables = new HashMap<>();
-        return pageVariables;
-    }
-
 }
