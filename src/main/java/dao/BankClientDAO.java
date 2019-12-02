@@ -37,22 +37,16 @@ public class BankClientDAO {
         Statement stmt = connection.createStatement();
         stmt.execute("select * from bank_client where name='" + name + "'");
         ResultSet result = stmt.getResultSet();
-        boolean validation = result.next();
+        result.next();
+        String userPassword = result.getString(3);
         result.close();
         stmt.close();
-        return validation;
+        return userPassword.equals(password);
     }
 
     public void updateClientsMoney(String name, String password, Long transactValue) throws SQLException {
-        Statement stmt = connection.createStatement();
-        stmt.execute("select * from bank_client where name = '" + name + "'");
-        ResultSet result = stmt.getResultSet();
-        result.next();
-        Long userMoney = result.getLong(4);
-        result.close();
-        stmt.close();
-        PreparedStatement preparedStatement = connection.prepareStatement("update bank_client set money = ? where name = ? and password = ?");
-        preparedStatement.setLong(1, userMoney + transactValue);
+        PreparedStatement preparedStatement = connection.prepareStatement("update bank_client set money = money + ? where name = ? and password = ?");
+        preparedStatement.setLong(1, transactValue);
         preparedStatement.setString(2, name);
         preparedStatement.setString(3, password);
         preparedStatement.executeUpdate();
@@ -89,7 +83,7 @@ public class BankClientDAO {
         stmt.execute("select * from bank_client where name='" + name + "'");
         ResultSet result = stmt.getResultSet();
         result.next();
-        Long userId = result.getLong(1);
+        long userId = result.getLong(1);
         result.close();
         stmt.close();
         return userId;
@@ -99,14 +93,16 @@ public class BankClientDAO {
         Statement stmt = connection.createStatement();
         stmt.execute("select * from bank_client where name='" + name + "'");
         ResultSet result = stmt.getResultSet();
-        result.next();
-        long userId = result.getLong(1);
-        String userName = result.getString(2);
-        String userPassword = result.getString(3);
-        Long userMoney = result.getLong(4);
-        result.close();
-        stmt.close();
-        return new BankClient(userId, userName, userPassword, userMoney);
+        if (result.next()) {
+            long userId = result.getLong(1);
+            String userName = result.getString(2);
+            String userPassword = result.getString(3);
+            Long userMoney = result.getLong(4);
+            result.close();
+            stmt.close();
+            return new BankClient(userId, userName, userPassword, userMoney);
+        }
+        return null;
     }
 
     public void addClient(BankClient client) throws SQLException {

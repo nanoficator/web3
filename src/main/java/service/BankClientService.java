@@ -51,7 +51,7 @@ public class BankClientService {
 
     public boolean addClient(BankClient client) throws DBException {
         try {
-            if (!getBankClientDAO().validateClient(client.getName(), client.getPassword())) {
+            if (getBankClientDAO().getClientByName(client.getName()) == null) {
                 getBankClientDAO().addClient(client);
                 return true;
             }
